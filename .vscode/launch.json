@@ -8,8 +8,8 @@
             "name": "Scrapy: Cnblogs",
             "type": "python",
             "request": "launch",
-            "program": "${workspaceFolder}/ArticleSpider/main.py",
-            "cwd": "${workspaceFolder}/ArticleSpider",
+            "program": "${workspaceFolder}/main.py",
+            "cwd": "${workspaceFolder}",
         }
     ]
 }

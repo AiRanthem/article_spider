@@ -74,5 +74,7 @@ class CnblogsSpider(scrapy.Spider):
         item = response.meta.get("item","")
         extraDict = json.loads(response.text)
         commentCount = extraDict['CommentCount']
+        item["commentCount"] = commentCount
         totalView = extraDict['TotalView']
+        item["totalView"] = totalView
         pass
