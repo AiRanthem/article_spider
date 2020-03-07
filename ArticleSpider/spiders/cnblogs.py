@@ -19,6 +19,8 @@ class CnblogsSpider(scrapy.Spider):
         for block in content_blocks[:1]:
             detail_url = block.xpath("h2/a/@href").extract_first()
             image_url = block.xpath("div[@class='entry_summary']/a/img/@src").extract_first()
+            if image_url.startswith('/'):
+                image_url = 'https:' + image_url
             yield scrapy.Request(
                 url=parse.urljoin(response.url,detail_url), 
                 callback=self.parse_detail, 
@@ -54,8 +56,11 @@ class CnblogsSpider(scrapy.Spider):
             # tags
             tags = ",".join(response.xpath("//div[@class='news_tags']/a/text()").extract())
             item["tags"] = tags
-
-            item["front_image_url"] = response.meta.get("front_image_url","")
+            # front image
+            if response.meta.get("front_image_url", ""):
+                item["front_image_url"] = [response.meta.get("front_image_url","")]
+            else:
+                item["front_image_url"] = []
             # extra
             yield scrapy.FormRequest(
                 url = parse.urljoin(response.url,"/NewsAjax/GetAjaxNewsInfo"),
@@ -77,4 +82,5 @@ class CnblogsSpider(scrapy.Spider):
         item["commentCount"] = commentCount
         totalView = extraDict['TotalView']
         item["totalView"] = totalView
-        pass
+        
+        yield item

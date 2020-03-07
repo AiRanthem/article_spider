@@ -29,3 +29,4 @@ class CNBlogArticleItem(scrapy.Item):
     totalView = scrapy.Field()
     # front image
     front_image_url = scrapy.Field()
+    front_image_path = scrapy.Field()

@@ -21,3 +21,4 @@
     ```
     注意：需要参数时，使用`FormRequest`。默认post，可以指定方法
 6. Items:数据传递
+7. pipeline结构
