@@ -10,6 +10,7 @@
             "request": "launch",
             "program": "${workspaceFolder}/main.py",
             "cwd": "${workspaceFolder}",
+            "console": "internalConsole"
         }
     ]
 }

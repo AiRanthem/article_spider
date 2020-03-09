@@ -1,7 +1,8 @@
+import sys
+
 from scrapy.cmdline import execute
+from ArticleSpider.settings import PROJECT_PATH
 
-import sys, os
-
-sys.path.append(os.path.dirname(os.path.abspath(__file__)))
+sys.path.append(PROJECT_PATH)
 
 execute(["scrapy","crawl","cnblogs"])

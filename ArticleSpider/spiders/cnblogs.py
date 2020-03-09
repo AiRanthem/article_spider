@@ -19,7 +19,7 @@ class CnblogsSpider(scrapy.Spider):
         for block in content_blocks[:1]:
             detail_url = block.xpath("h2/a/@href").extract_first()
             image_url = block.xpath("div[@class='entry_summary']/a/img/@src").extract_first()
-            if image_url.startswith('/'):
+            if image_url and image_url.startswith('/'):
                 image_url = 'https:' + image_url
             yield scrapy.Request(
                 url=parse.urljoin(response.url,detail_url), 

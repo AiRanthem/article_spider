@@ -21,4 +21,94 @@
     ```
     注意：需要参数时，使用`FormRequest`。默认post，可以指定方法
 6. Items:数据传递
-7. pipeline结构
+7. 图片下载的pipeline：`scrapy.pipelines.images.ImagesPipeline`
+    ```python
+    #配置
+    IMAGES_URLS_FIELD = 'front_image_url'
+    IMAGES_STORE = '/home/airan/learn_python/article_spider/images'
+    ```
+8. pipeline的结构（方法）：
+    ```python
+    process_item(self, item, spider)
+    item_completed(self, results, item, info)
+    spider_closed(self, spider)
+    ```
+9. 使用Exporter简化导出。只需要三步就可以使用exporter：
+    1. 在init中调用`start_exporting()`
+    2. 需要导出时，使用`export_item(item)`
+    3. 最后调用`finish_exporting()`
+    ```python
+    # example
+    class JsonExporterPipeline(object):
+        def __init__(self):
+            super().__init__()
+            self.file = open('articleExporter.json', 'wb')
+            self.exporter = JsonItemExporter(self.file, encoding='utf-8', ensure_ascii=False)
+            self.exporter.start_exporting()
+
+        def process_item(self, item, spider):
+            self.exporter.export_item(item)
+            return item
+
+        def spider_closed(self, spider):
+            self.exporter.finish_exporting()
+            self.file.close()
+    ```
+10. 数据入库: 
+    1. 通过MySQLdb模块直接进行数据库操作：
+        ```python
+        class MysqlPipeline(object):
+            def __init__(self):
+                super().__init__()
+                self.conn = MySQLdb.connect(
+                    MYSQL_HOST,
+                    MYSQL_USER,
+                    MYSQL_PASSWORD,
+                    MYSQL_DB,
+                    charset = MYSQL_CHARSET,
+                    use_unicode = True
+                )
+                self.cursor = self.conn.cursor()
+
+            def process_item(self, item, spider):
+                insert_sql = '''
+                    insert into article values(%s)
+                '''
+                params = [param1]
+                self.cursor.execute(insert_sql, params)
+                self.conn.commit()
+        ```
+    2. 异步处理，代码框架如下：
+        ```python
+        from twisted.enterprise import adbapi
+        from MySQLdb.cursors import DictCursor
+        class MysqlTwistedPipeline(object):
+            @classmethod
+            def from_settings(cls, settings):
+                dbparams = dict(
+                    host = settings['MYSQL_HOST'], 
+                    _other_params = settings['OTHER_PARAMS'],
+                    cursorclass = DictCursor,
+                    use_unicode = True
+                )
+                dbpool = adbapi.ConnectionPool("MySQLdb", **dbparams)
+                return cls(dbpool)
+            
+            def __init__(self, dbpool):
+                self.dbpool = dbpool
+
+            def process_item(self, item, spider):
+                query = self.dbpool.runInteraction(self.do_insert, item) # runInteraction(function, **params),自动注入cursor
+                query.addErrback(self.handle_error) # 自动注入failure
+
+            def handle_error(self, failure):
+                print(failure)
+
+            def do_insert(self, cursor, item):
+                insert_sql = '''
+                    insert into article values(%s,%s,%s,%s,%s,%s,%s,%s,%s)
+                '''
+                params = []
+                params.append(_something_in_your_item)
+                cursor.execute(insert_sql, tuple(params))
+        ```

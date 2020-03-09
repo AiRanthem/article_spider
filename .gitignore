@@ -1,7 +1,8 @@
 # my
 /images
-
+article.json
 .env
+/ArticleSpider/config.py
 
 # Byte-compiled / optimized / DLL files
 __pycache__/

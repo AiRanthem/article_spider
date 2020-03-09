@@ -8,6 +8,11 @@
 #     https://docs.scrapy.org/en/latest/topics/settings.html
 #     https://docs.scrapy.org/en/latest/topics/downloader-middleware.html
 #     https://docs.scrapy.org/en/latest/topics/spider-middleware.html
+import os
+
+from ArticleSpider.config import *
+
+PROJECT_PATH = os.path.abspath(os.path.join(os.path.dirname(__file__), os.pardir))
 
 BOT_NAME = 'ArticleSpider'
 
@@ -19,7 +24,7 @@ NEWSPIDER_MODULE = 'ArticleSpider.spiders'
 #USER_AGENT = 'ArticleSpider (+http://www.yourdomain.com)'
 
 # Obey robots.txt rules
-ROBOTSTXT_OBEY = True
+ROBOTSTXT_OBEY = False
 
 # Configure maximum concurrent requests performed by Scrapy (default: 16)
 #CONCURRENT_REQUESTS = 32
@@ -65,12 +70,14 @@ ROBOTSTXT_OBEY = True
 # Configure item pipelines
 # See https://docs.scrapy.org/en/latest/topics/item-pipeline.html
 ITEM_PIPELINES = {
-    'ArticleSpider.pipelines.ArticleImagesPipeline': 1
+    'ArticleSpider.pipelines.ArticleImagesPipeline': 1,
+    # 'ArticleSpider.pipelines.JsonExporterPipeline': 2,
+    'ArticleSpider.pipelines.MysqlTwistedPipeline': 3
 }
 
-IMAGES_URLS_FIELD = 'front_image_url'
-IMAGES_STORE = '/home/airan/learn_python/article_spider/images'
 
+IMAGES_URLS_FIELD = 'front_image_url'
+IMAGES_STORE = PROJECT_PATH + '/images'
 # Enable and configure the AutoThrottle extension (disabled by default)
 # See https://docs.scrapy.org/en/latest/topics/autothrottle.html
 #AUTOTHROTTLE_ENABLED = True
