@@ -1,6 +1,8 @@
 # Article Spider
 根据慕课网的scrapy教程学习爬虫的编写
 
+## **项目结束，恭喜进入下一课程**
+
 ## 结构
 1. parse:用来解析
 2. Request/FormRequest:通过yield发起请求
