@@ -21,6 +21,17 @@
     ```
     注意：需要参数时，使用`FormRequest`。默认post，可以指定方法
 6. Items:数据传递
+    + 使用 name = Field()来定义域
+    + Field参数：
+        ```python
+        from scrapy.loader.processors import MapCompose, TakeFirst # 用来连接方法和取首位
+        # 处理器可以从上面的模块选择导入
+        scrapy.Field(
+            input_processor = MapCompose(fun1, fun2, ..), # 输入值会被传入的参数串联处理
+            output_processor = TakeFirst() # 这里保存第一个
+        )
+        ```
+    
 7. 图片下载的pipeline：`scrapy.pipelines.images.ImagesPipeline`
     ```python
     #配置
@@ -112,3 +123,25 @@
                 params.append(_something_in_your_item)
                 cursor.execute(insert_sql, tuple(params))
         ```
+11. 使用ItemLoader
+    ```python
+    ''' 使用ItemLoader '''
+    from scrapy.loader import ItemLoader
+
+    # ...
+
+    item_loader = ItemLoader(item=YourItem(), response=response)
+    item_loader.add_xpath("field_name", "xpath")
+    item_loader.add_value("field_name", value)
+    # ...
+    item = item_loader.load_item()
+
+    ''' 定制ItemLoader '''
+    # 通过继承ItemLoader类并修改下面四个属性，可以简单定制ItemLoader
+    class ItemLoader(object):
+        default_item_class = Item
+        default_input_processor = Identity()
+        default_output_processor = Identity()
+        default_selector_class = Selector
+    # 默认的processor会被Item中Field设置的processor覆盖
+    ```

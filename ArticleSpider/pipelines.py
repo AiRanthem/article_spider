@@ -52,36 +52,6 @@ class JsonExporterPipeline(object):
         self.exporter.finish_exporting()
         self.file.close()
 
-class MysqlPipeline(object):
-    def __init__(self):
-        super().__init__()
-        self.conn = MySQLdb.connect(
-            MYSQL_HOST,
-            MYSQL_USER,
-            MYSQL_PASSWORD,
-            MYSQL_DB,
-            charset = MYSQL_CHARSET,
-            use_unicode = True
-        )
-        self.cursor = self.conn.cursor()
-
-    def process_item(self, item, spider):
-        insert_sql = '''
-            insert into article values(%s,%s,%s,%s,%s,%s,%s,%s,%s)
-        '''
-        params = []
-        params.append(item.get('post_id'))
-        params.append(item.get('title',''))
-        params.append(item.get('create_time','1970-1-1'))
-        params.append(item.get('content',''))
-        params.append(item.get('tags',''))
-        params.append(item.get('commentCount',0))
-        params.append(item.get('totalView',0))
-        params.append(item.get('front_image_url',''))
-        params.append(item.get('front_image_path',''))
-        self.cursor.execute(insert_sql, params)
-        self.conn.commit()
-
 class MysqlTwistedPipeline(object):
     @classmethod
     def from_settings(cls, settings):

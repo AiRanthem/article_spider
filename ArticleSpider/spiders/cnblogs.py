@@ -4,19 +4,23 @@ import re
 import json
 
 import scrapy
-import requests
-
-from ArticleSpider.items import CNBlogArticleItem
+from ArticleSpider.items import CNBlogArticleItem, CNBlogItemLoader
 class CnblogsSpider(scrapy.Spider):
     name = 'cnblogs'
     allowed_domains = ['news.cnblogs.com']
     start_urls = ['http://news.cnblogs.com/']
 
     def parse(self, response):
+        # 出口
+        page = response.meta.get("page_no", None)
+        if not page:
+            page = 1
+        if page > 3:
+            return
         ### 获得封面和文章url
         content_blocks = response.xpath("//div[@class='content']")
-        # todo 修改迭代次数，去掉注释
-        for block in content_blocks[:1]:
+
+        for block in content_blocks:
             detail_url = block.xpath("h2/a/@href").extract_first()
             image_url = block.xpath("div[@class='entry_summary']/a/img/@src").extract_first()
             if image_url and image_url.startswith('/'):
@@ -27,47 +31,60 @@ class CnblogsSpider(scrapy.Spider):
                 meta={"front_image_url":image_url}
             )
         
-        # next_path = response.xpath("//a[contains(text(), 'Next >')]/@href").extract_first()
-        # yield scrapy.Request(url=parse.urljoin(response.url, next_path), callback=self.parse)
+        next_path = response.xpath("//a[contains(text(), 'Next >')]/@href").extract_first()
+        yield scrapy.Request(url=parse.urljoin(response.url, next_path), callback=self.parse, meta={'page_no':page+1})
 
     def parse_detail(self, response):
         '''对新闻详情页面进行信息解析'''
         match_re = re.match(".*?(\d+)", response.url)
         if match_re:
-            # create an item
-            item = CNBlogArticleItem()
-
             # id
             post_id = match_re.group(1)
-            item["post_id"] = post_id
+            # create an item
+            # item = CNBlogArticleItem()
+
+            # item["post_id"] = post_id
             # title
-            title = response.xpath("//div[@id='news_title']/a/text()").extract_first()
-            item["title"] = title
+            # title = response.xpath("//div[@id='news_title']/a/text()").extract_first()
+            # item["title"] = title
             # time
-            time_match = re.match('.*?(\d+.*)', response.xpath("//span[@class='time']/text()").extract_first())
-            if time_match:
-                create_time = time_match.group(1)
-            else:
-                create_time = ''
-            item["create_time"] = create_time
+            # time_match = re.match('.*?(\d+.*)', response.xpath("//span[@class='time']/text()").extract_first())
+            # if time_match:
+            #     create_time = time_match.group(1)
+            # else:
+            #     create_time = ''
+            # item["create_time"] = create_time
             # content
-            content = response.xpath("//div[@id='news_body']").extract_first()
-            item["content"] = content
+            # content = response.xpath("//div[@id='news_body']").extract_first()
+            # item["content"] = content
             # tags
-            tags = ",".join(response.xpath("//div[@class='news_tags']/a/text()").extract())
-            item["tags"] = tags
+            # tags = ",".join(response.xpath("//div[@class='news_tags']/a/text()").extract())
+            # item["tags"] = tags
             # front image
+            # if response.meta.get("front_image_url", ""):
+            #     item["front_image_url"] = [response.meta.get("front_image_url","")]
+            # else:
+            #     item["front_image_url"] = []
+            
+            '''
+            使用ItemLoader
+            '''
+            item_loader = CNBlogItemLoader(item=CNBlogArticleItem(), response=response)
+            item_loader.add_value("post_id", post_id)
+            item_loader.add_xpath("title", "//div[@id='news_title']/a/text()")
+            item_loader.add_xpath("create_time", "//span[@class='time']/text()")
+            item_loader.add_xpath("content", "//div[@id='news_body']")
+            item_loader.add_xpath("tags", "//div[@class='news_tags']/a/text()")
             if response.meta.get("front_image_url", ""):
-                item["front_image_url"] = [response.meta.get("front_image_url","")]
-            else:
-                item["front_image_url"] = []
+                item_loader.add_value(
+                    "front_image_url", response.meta.get("front_image_url", ""))
             # extra
             yield scrapy.FormRequest(
                 url = parse.urljoin(response.url,"/NewsAjax/GetAjaxNewsInfo"),
                 callback = self.parse_extra_info, 
                 meta = {
                     'post_id' : post_id,
-                    "item" : item
+                    "item_loader" : item_loader
                 },
                 formdata={'contentId':post_id},
                 method='GET'
@@ -76,11 +93,17 @@ class CnblogsSpider(scrapy.Spider):
         
     def parse_extra_info(self, response):
         '''对新闻详情页面的ajax数据进行解析'''
-        item = response.meta.get("item","")
-        extraDict = json.loads(response.text)
-        commentCount = extraDict['CommentCount']
-        item["commentCount"] = commentCount
-        totalView = extraDict['TotalView']
-        item["totalView"] = totalView
+        item_loader = response.meta.get("item_loader",None)
+        if item_loader:
+            extraDict = json.loads(response.text)
+            item_loader.add_value("commentCount", extraDict['CommentCount'])
+            item_loader.add_value("totalView", extraDict['TotalView'])
+
+        item = item_loader.load_item()
+            
+        # commentCount = extraDict['CommentCount']
+        # item["commentCount"] = commentCount
+        # totalView = extraDict['TotalView']
+        # item["totalView"] = totalView
         
         yield item
