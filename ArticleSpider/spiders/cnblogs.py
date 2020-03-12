@@ -5,6 +5,8 @@ import json
 
 import scrapy
 from ArticleSpider.items import CNBlogArticleItem, CNBlogItemLoader
+
+
 class CnblogsSpider(scrapy.Spider):
     name = 'cnblogs'
     allowed_domains = ['news.cnblogs.com']
@@ -26,16 +28,17 @@ class CnblogsSpider(scrapy.Spider):
             if image_url and image_url.startswith('/'):
                 image_url = 'https:' + image_url
             yield scrapy.Request(
-                url=parse.urljoin(response.url,detail_url), 
-                callback=self.parse_detail, 
-                meta={"front_image_url":image_url}
+                url=parse.urljoin(response.url, detail_url),
+                callback=self.parse_detail,
+                meta={"front_image_url": image_url}
             )
-        
+
         next_path = response.xpath("//a[contains(text(), 'Next >')]/@href").extract_first()
-        yield scrapy.Request(url=parse.urljoin(response.url, next_path), callback=self.parse, meta={'page_no':page+1})
+        yield scrapy.Request(url=parse.urljoin(response.url, next_path), callback=self.parse,
+                             meta={'page_no': page + 1})
 
     def parse_detail(self, response):
-        '''对新闻详情页面进行信息解析'''
+        """对新闻详情页面进行信息解析"""
         match_re = re.match(".*?(\d+)", response.url)
         if match_re:
             # id
@@ -65,7 +68,7 @@ class CnblogsSpider(scrapy.Spider):
             #     item["front_image_url"] = [response.meta.get("front_image_url","")]
             # else:
             #     item["front_image_url"] = []
-            
+
             '''
             使用ItemLoader
             '''
@@ -80,30 +83,30 @@ class CnblogsSpider(scrapy.Spider):
                     "front_image_url", response.meta.get("front_image_url", ""))
             # extra
             yield scrapy.FormRequest(
-                url = parse.urljoin(response.url,"/NewsAjax/GetAjaxNewsInfo"),
-                callback = self.parse_extra_info, 
-                meta = {
-                    'post_id' : post_id,
-                    "item_loader" : item_loader
+                url=parse.urljoin(response.url, "/NewsAjax/GetAjaxNewsInfo"),
+                callback=self.parse_extra_info,
+                meta={
+                    'post_id': post_id,
+                    "item_loader": item_loader
                 },
-                formdata={'contentId':post_id},
+                formdata={'contentId': post_id},
                 method='GET'
             )
             pass
-        
+
     def parse_extra_info(self, response):
         '''对新闻详情页面的ajax数据进行解析'''
-        item_loader = response.meta.get("item_loader",None)
+        item_loader = response.meta.get("item_loader", None)
         if item_loader:
             extraDict = json.loads(response.text)
             item_loader.add_value("commentCount", extraDict['CommentCount'])
             item_loader.add_value("totalView", extraDict['TotalView'])
 
         item = item_loader.load_item()
-            
+
         # commentCount = extraDict['CommentCount']
         # item["commentCount"] = commentCount
         # totalView = extraDict['TotalView']
         # item["totalView"] = totalView
-        
+
         yield item
