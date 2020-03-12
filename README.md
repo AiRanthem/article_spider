@@ -1,7 +1,11 @@
 # Article Spider
 scrapy框架入门
 
-## **项目结束**
+## **第一阶段：初步使用scrapy爬取CNblog**
+
+## [第二阶段: 爬取知乎数据](zhihu_note.md)
+
+
 
 ## 结构
 1. parse:用来解析
