@@ -36,7 +36,7 @@ Scrapy==2.0.0
 selenium==3.141.0
 service-identity==18.1.0
 six==1.14.0
-tensorflow==1.0.1
+tensorflow==1.15.2
 Theano==1.0.4
 Twisted==19.10.0
 urllib3==1.25.8
