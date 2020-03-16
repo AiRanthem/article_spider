@@ -4,6 +4,10 @@
 article.json
 .env
 /ArticleSpider/config.py
+/utils/realcap
+captcha.jpg
+captcha_code.txt
+*.sh
 
 # Byte-compiled / optimized / DLL files
 __pycache__/

@@ -1,5 +1,11 @@
 # 爬取知乎数据
 
+## 日记
+
+2020/3/12 完成selenium登录，cookies登录
+
+## 笔记
+
 1. selenium基本使用
 
    ```python
@@ -35,8 +41,6 @@
            browser.get('https://www.zhihu.com/signin')
    ```
 
-   
-
 3. 使用cookie
 
    ```python
@@ -60,4 +64,14 @@
 
    
 
-4. 
+4. 通过`者也`识别倒立文字，注意修改sklearn中的引用：
+
+   ```python
+   from scipy.misc import comb
+   # change to
+   from scipy.special import comb
+   ```
+
+   
+
+5. 
