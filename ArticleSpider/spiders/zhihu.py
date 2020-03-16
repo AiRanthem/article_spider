@@ -23,7 +23,7 @@ class ZhihuSpider(scrapy.Spider):
         chrome_option = Options()
         chrome_option.add_argument('--disable-extensions')
         chrome_option.add_experimental_option("debuggerAddress", "127.0.0.1:9222")
-        self.browser = webdriver.Chrome(options=chrome_option)
+        self.browser = webdriver.Chrome(executable_path='driver/chromedriver.exe', options=chrome_option)
 
     def start_requests(self):
         # cookies = pickle.load(open(COOKIES_STORE+'/zhihu.cookie', 'rb'))
@@ -52,14 +52,16 @@ class ZhihuSpider(scrapy.Spider):
 
         # catch the captcha
         cap_container = self.wait_an_element_by_xpath(
-            xpath="//div[@class='Captcha SignFlow-captchaContainer']", timeout=1.5)
+            xpath="//div[contains(@class,'Captcha SignFlow-captchaContainer')]", timeout=1.5)
         if cap_container:
+            cap = None
             try:
                 cap = ZhihuEnCaptcha(self.parse_captcha(EN_CAP_XPATH))
             except:
                 try:
                     cap = ZhihuCnCaptcha(self.parse_captcha(CN_CAP_XPATH))
-                except:
+                except Exception as e:
+                    print(e)
                     cap = None
             if cap:
                 cap.process(browser=self.browser)

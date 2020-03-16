@@ -39,7 +39,6 @@ class ZhihuCnCaptcha(ZhihuCaptcha):
             move(x, y)
             print("Mouse: moving to ({}, {})".format(x, y))
             click()
-            time.sleep(3)
 
 
 
