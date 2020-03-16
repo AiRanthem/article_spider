@@ -17,7 +17,7 @@ mouse==0.7.1
 mysqlclient==1.4.6
 numpy==1.18.1
 parsel==1.5.2
-Pillow==3.4.2
+Pillow==6.2.0
 Protego==0.1.16
 protobuf==3.11.3
 pyasn1==0.4.8
