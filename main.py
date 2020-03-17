@@ -6,4 +6,4 @@ from ArticleSpider.settings import PROJECT_PATH
 sys.path.append(PROJECT_PATH)
 
 # execute(["scrapy","crawl","cnblogs"])
-execute(["scrapy","crawl","zhihu"])
+execute(["scrapy", "crawl", "zhihu"])

@@ -96,4 +96,3 @@ class MysqlTwistedPipeline(object):
         params.append(item.get('front_image_path', ''))
 
         cursor.execute(insert_sql, tuple(params))
-

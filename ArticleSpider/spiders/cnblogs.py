@@ -43,32 +43,6 @@ class CnblogsSpider(scrapy.Spider):
         if match_re:
             # id
             post_id = match_re.group(1)
-            # create an item
-            # item = CNBlogArticleItem()
-
-            # item["post_id"] = post_id
-            # title
-            # title = response.xpath("//div[@id='news_title']/a/text()").extract_first()
-            # item["title"] = title
-            # time
-            # time_match = re.match('.*?(\d+.*)', response.xpath("//span[@class='time']/text()").extract_first())
-            # if time_match:
-            #     create_time = time_match.group(1)
-            # else:
-            #     create_time = ''
-            # item["create_time"] = create_time
-            # content
-            # content = response.xpath("//div[@id='news_body']").extract_first()
-            # item["content"] = content
-            # tags
-            # tags = ",".join(response.xpath("//div[@class='news_tags']/a/text()").extract())
-            # item["tags"] = tags
-            # front image
-            # if response.meta.get("front_image_url", ""):
-            #     item["front_image_url"] = [response.meta.get("front_image_url","")]
-            # else:
-            #     item["front_image_url"] = []
-
             '''
             使用ItemLoader
             '''

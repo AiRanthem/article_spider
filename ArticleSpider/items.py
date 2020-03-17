@@ -39,3 +39,7 @@ class CNBlogArticleItem(scrapy.Item):
     # front image
     front_image_url = scrapy.Field(output_processor = Identity())
     front_image_path = scrapy.Field()
+
+class EasyZhihuJsonItem(scrapy.Item):
+    data = scrapy.Field()
+

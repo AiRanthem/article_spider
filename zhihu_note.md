@@ -4,6 +4,8 @@
 
 2020/3/12 完成selenium登录，cookies登录
 
+2020/3/17 完成知乎爬虫。
+
 ## 笔记
 
 1. selenium基本使用
@@ -74,4 +76,21 @@
 
    
 
-5. 
+5. scrapy shell通过-s USER_AGENT='...'来实现配置的添加：
+
+   `scrapy shell -s USER_AGENT='MOZILA.....' https://www.zhihu.com`
+
+6. 对url的批量处理：这里需要对获取首页所有的问题url
+
+   ```python
+   all_urls = response.xpath('//a/@href').extract()
+   all_urls = [parse.urljoin(response.url, url) for url in all_urls]
+   # with filter
+   all_urls = filter(lambda x: True if x.startswith('https') else Flase, all_urls)
+   # with generator
+   
+   ```
+
+   
+
+7. 通过开发者工具找数据API，可以减少很多工作

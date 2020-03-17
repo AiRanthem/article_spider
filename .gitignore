@@ -1,5 +1,5 @@
 # my
-/cookies
+/cookies/*.cookie
 /images
 article.json
 .env
@@ -8,6 +8,8 @@ article.json
 captcha.jpg
 captcha_code.txt
 *.sh
+utils/zhihu_cookie.json
+zhihu_json_data/*.json
 
 # Byte-compiled / optimized / DLL files
 __pycache__/

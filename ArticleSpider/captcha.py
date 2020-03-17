@@ -41,8 +41,6 @@ class ZhihuCnCaptcha(ZhihuCaptcha):
             click()
 
 
-
-
 class ZhihuEnCaptcha(ZhihuCaptcha):
     def __init__(self, src):
         super().__init__(src)
