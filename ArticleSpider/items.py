@@ -11,9 +11,6 @@ from scrapy.loader.processors import TakeFirst, Identity, MapCompose, Join
 from scrapy.loader import ItemLoader
 
 
-class CNBlogItemLoader(ItemLoader):
-    default_output_processor = TakeFirst()
-
 def data_convert(value):
     time_match = re.match('.*?(\d+.*)', value)
     if time_match:
@@ -40,6 +37,22 @@ class CNBlogArticleItem(scrapy.Item):
     front_image_url = scrapy.Field(output_processor = Identity())
     front_image_path = scrapy.Field()
 
-class EasyZhihuJsonItem(scrapy.Item):
-    data = scrapy.Field()
+    def get_sql(self):
+        insert_sql = '''
+            insert into article (post_id, title, create_time, content, tags, comment_count, total_view, front_image_url, front_image_path)
+            values(%s,%s,%s,%s,%s,%s,%s,%s,%s)
+            ON DUPLICATE key update content=VALUES(content), title=VALUES(title);
+        '''
+        params = []
+        params.append(self.get('post_id'))
+        params.append(self.get('title', ''))
+        params.append(self.get('create_time', '1970-1-1'))
+        params.append(self.get('content', ''))
+        params.append(self.get('tags', ''))
+        params.append(self.get('commentCount', 0))
+        params.append(self.get('totalView', 0))
+        params.append(self.get('front_image_url', ''))
+        params.append(self.get('front_image_path', ''))
+
+        return insert_sql, params
 

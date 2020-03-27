@@ -94,3 +94,37 @@
    
 
 7. 通过开发者工具找数据API，可以减少很多工作
+
+8. 通过一个pipeline处理不同的Item：将sql语句包装在items中屏蔽变化
+
+   ```python
+   # class xxItem
+    def get_sql(self):
+           insert_sql = '''
+               insert into article (post_id, title, create_time, content, tags, comment_count, total_view, front_image_url, front_image_path)
+               values(%s,%s,%s,%s,%s,%s,%s,%s,%s)
+               ON DUPLICATE key update content=VALUES(content), title=VALUES(title);
+           '''
+           params = []
+           params.append(self.get('post_id'))
+           params.append(self.get('title', ''))
+           params.append(self.get('create_time', '1970-1-1'))
+           params.append(self.get('content', ''))
+           params.append(self.get('tags', ''))
+           params.append(self.get('commentCount', 0))
+           params.append(self.get('totalView', 0))
+           params.append(self.get('front_image_url', ''))
+           params.append(self.get('front_image_path', ''))
+   
+           return insert_sql, params
+       
+   # class xxPipeline
+       def do_insert(self, cursor, item):
+           insert_sql, params = item.get_sql()
+           cursor.execute(insert_sql, tuple(params))
+   
+   ```
+
+   
+
+9. 

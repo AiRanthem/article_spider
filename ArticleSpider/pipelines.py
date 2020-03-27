@@ -79,20 +79,21 @@ class MysqlTwistedPipeline(object):
         print(failure)
 
     def do_insert(self, cursor, item):
-        insert_sql = '''
-            insert into article (post_id, title, create_time, content, tags, comment_count, total_view, front_image_url, front_image_path)
-            values(%s,%s,%s,%s,%s,%s,%s,%s,%s)
-            ON DUPLICATE key update content=VALUES(content), title=VALUES(title);
-        '''
-        params = []
-        params.append(item.get('post_id'))
-        params.append(item.get('title', ''))
-        params.append(item.get('create_time', '1970-1-1'))
-        params.append(item.get('content', ''))
-        params.append(item.get('tags', ''))
-        params.append(item.get('commentCount', 0))
-        params.append(item.get('totalView', 0))
-        params.append(item.get('front_image_url', ''))
-        params.append(item.get('front_image_path', ''))
+        # insert_sql = '''
+        #     insert into article (post_id, title, create_time, content, tags, comment_count, total_view, front_image_url, front_image_path)
+        #     values(%s,%s,%s,%s,%s,%s,%s,%s,%s)
+        #     ON DUPLICATE key update content=VALUES(content), title=VALUES(title);
+        # '''
+        # params = []
+        # params.append(item.get('post_id'))
+        # params.append(item.get('title', ''))
+        # params.append(item.get('create_time', '1970-1-1'))
+        # params.append(item.get('content', ''))
+        # params.append(item.get('tags', ''))
+        # params.append(item.get('commentCount', 0))
+        # params.append(item.get('totalView', 0))
+        # params.append(item.get('front_image_url', ''))
+        # params.append(item.get('front_image_path', ''))
+        insert_sql, params = item.get_sql()
 
         cursor.execute(insert_sql, tuple(params))

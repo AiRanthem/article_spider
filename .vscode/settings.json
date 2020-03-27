@@ -1,6 +1,6 @@
 {
     "python.envFile": "$${workspaceFolder}/.env",
-    "python.pythonPath": "venv/bin/python",
+    "python.pythonPath": "C:\\Users\\airan\\Anaconda3\\envs\\scrapy\\python.exe",
     "python.autoComplete.extraPaths": [
         "venv/lib64/python3.6/site-packages/"
     ],

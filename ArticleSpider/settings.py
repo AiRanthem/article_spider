@@ -71,9 +71,9 @@ DOWNLOADER_MIDDLEWARES = {
 # Configure item pipelines
 # See https://docs.scrapy.org/en/latest/topics/item-pipeline.html
 ITEM_PIPELINES = {
-    # 'ArticleSpider.pipelines.ArticleImagesPipeline': 1,
-    # 'ArticleSpider.pipelines.JsonExporterPipeline': 2
-    # 'ArticleSpider.pipelines.MysqlTwistedPipeline': 3
+    'ArticleSpider.pipelines.ArticleImagesPipeline': 1,
+    'ArticleSpider.pipelines.JsonExporterPipeline': 2,
+    'ArticleSpider.pipelines.MysqlTwistedPipeline': 3
 }
 
 IMAGES_URLS_FIELD = 'front_image_url'

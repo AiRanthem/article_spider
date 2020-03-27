@@ -4,7 +4,7 @@ import re
 import json
 
 import scrapy
-from ArticleSpider.items import CNBlogArticleItem, CNBlogItemLoader
+from ArticleSpider.items import CNBlogArticleItem
 
 
 class CnblogsSpider(scrapy.Spider):
@@ -69,7 +69,7 @@ class CnblogsSpider(scrapy.Spider):
             pass
 
     def parse_extra_info(self, response):
-        '''对新闻详情页面的ajax数据进行解析'''
+        """对新闻详情页面的ajax数据进行解析"""
         item_loader = response.meta.get("item_loader", None)
         if item_loader:
             extraDict = json.loads(response.text)

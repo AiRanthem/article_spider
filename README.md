@@ -3,7 +3,9 @@ scrapy框架入门
 
 ## 第一阶段：初步使用scrapy爬取CNblog（已完成）
 
-## [第二阶段: 爬取知乎数据](zhihu_note.md)（已完成）
+## [第二阶段: 爬取知乎数据（学习selenium）](zhihu_note.md)（已完成）
+
+## [第三阶段：爬取拉勾网数据（学习Crawl）](lagou_note.md)
 
 
 

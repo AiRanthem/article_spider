@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="DataSourceManagerImpl" format="xml" multifile-model="true">
+    <data-source source="LOCAL" name="article" uuid="d5b52ae8-ad8f-4da7-8f65-7cbaa5b5930b">
+      <driver-ref>mysql.8</driver-ref>
+      <synchronize>true</synchronize>
+      <jdbc-driver>com.mysql.cj.jdbc.Driver</jdbc-driver>
+      <jdbc-url>jdbc:mysql://rm-wz9m0e1s0ap137115no.mysql.rds.aliyuncs.com:3306/article_spider</jdbc-url>
+    </data-source>
+  </component>
+</project>
