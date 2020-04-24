@@ -7,7 +7,9 @@ scrapy框架入门
 
 ## [第三阶段：爬取拉勾网数据（学习Crawl）](lagou_note.md)
 
+## [第四阶段：进阶内容和技巧](advansed.md)
 
+## [第五阶段：增量抓取](increase.md)
 
 ## 结构
 1. parse:用来解析
